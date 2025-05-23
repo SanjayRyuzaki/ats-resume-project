@@ -1,5 +1,6 @@
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
+const stopwords = require('./stopwords.json');
 
 function getFileExtension(filename) {
   return filename.split('.').pop().toLowerCase();
@@ -22,7 +23,23 @@ async function parseJob(file) {
   return parseResume(file);
 }
 
+function cleanText(text) {
+  return text
+    .toLowerCase()
+    .match(/\w+/g)
+    .filter(word => !stopwords.includes(word));
+}
+
+function getATSSimilarityScore(resumeText, jobText) {
+  const resumeWords = new Set(cleanText(resumeText));
+  const jobWords = new Set(cleanText(jobText));
+  const matched = [...resumeWords].filter(word => jobWords.has(word));
+  return Math.round((matched.length / jobWords.size) * 100);
+}
+
+// ✅ Properly export all 3 functions
 module.exports = {
   parseResume,
   parseJob,
+  getATSSimilarityScore,
 };
