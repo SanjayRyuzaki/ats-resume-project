@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 const pool = require('./utils/db');
+const scoreRoutes = require('./routes/scoreRoutes');
 
 dotenv.config();
 
@@ -10,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use('/api', scoreRoutes);
 
 // Basic hello route
 app.get('/', (req, res) => {
