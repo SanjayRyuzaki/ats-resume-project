@@ -15,6 +15,10 @@ router.post('/score', authenticate, upload.fields([
   { name: 'job', maxCount: 1 },
 ]), async (req, res) => {
   try {
+    if (!req.files || !req.files['resume'] || !req.files['job']) {
+      return res.status(400).json({ error: 'Both resume and job files are required' });
+    }
+
     const resumeFile = req.files['resume'][0];
     const jobFile = req.files['job'][0];
 
@@ -31,9 +35,10 @@ router.post('/score', authenticate, upload.fields([
       [req.user.id, resumeText, jobText, score, resumeTitle, uploadDate]
     );
 
+    console.log(`Score calculated for user ${req.user.id}: ${score}%`);
     res.json({ score });
   } catch (err) {
-    console.error(err);
+    console.error('Scoring error:', err.message);
     res.status(500).json({ error: 'Scoring failed' });
   }
 });
@@ -46,9 +51,10 @@ router.get('/checks', authenticate, async (req, res) => {
       [req.user.id]
     );
 
+    console.log(`History fetched for user ${req.user.id}: ${result.rows.length} records`);
     res.json({ history: result.rows });
   } catch (err) {
-    console.error(err);
+    console.error('History fetch error:', err.message);
     res.status(500).json({ error: 'Could not load score history' });
   }
 });

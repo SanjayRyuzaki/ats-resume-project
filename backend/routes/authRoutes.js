@@ -34,6 +34,7 @@ router.post("/google", async (req, res) => {
     );
 
     let userId;
+    let isNewUser = false;
 
     if (userRes.rows.length > 0) {
       userId = userRes.rows[0].id;
@@ -43,6 +44,7 @@ router.post("/google", async (req, res) => {
         [name, email]
       );
       userId = insertRes.rows[0].id;
+      isNewUser = true;
     }
 
     // Create your own JWT
@@ -52,6 +54,7 @@ router.post("/google", async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    console.log(`User ${isNewUser ? 'created' : 'logged in'}: ${email} (ID: ${userId})`);
     res.json({
       token: ourToken,
       user: { name, email, avatarUrl: picture }
