@@ -1,18 +1,30 @@
 // src/App.tsx
-import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import Upload from './pages/Upload';
+import Score from './pages/Score';
+import ProtectedRoute from './components/ProtectedRoute';
+import Dashboard from "./pages/Dashboard"; 
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">
-          ATS Resume Checker
-        </h1>
-        <p className="text-center text-gray-600">
-          Welcome to the ATS Resume Checker application
-        </p>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/upload" element={<Upload />} />
+        
+        {/* Protected routes */}
+        <Route
+          path="/score"
+          element={
+            <ProtectedRoute>
+              <Score />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
