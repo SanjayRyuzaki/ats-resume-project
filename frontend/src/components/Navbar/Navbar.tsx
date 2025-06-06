@@ -9,8 +9,12 @@ import {
   NavLinks,
   NavBtn
 } from './Navbar.elements';
+import { useAuth } from '@/hooks/useAuth';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Navbar: React.FC = () => {
+  const { user, login, logout } = useAuth();
+
   return (
     <Nav>
       <NavbarContainer>
@@ -32,19 +36,42 @@ const Navbar: React.FC = () => {
           </NavItem>
         </NavMenu>
         <NavBtn>
-          {/* Placeholder for login/logout button */}
-          <button style={{
-            background: '#4b59f7',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '8px 20px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            fontSize: '1rem'
-          }}>
-            Login
-          </button>
+          {user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              {user.avatarUrl && (
+                <img src={user.avatarUrl} alt={user.name} style={{ width: 32, height: 32, borderRadius: '50%' }} />
+              )}
+              <span style={{ fontWeight: 500 }}>{user.name}</span>
+              <button
+                style={{
+                  background: '#eee',
+                  color: '#222',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '8px 16px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  marginLeft: 8
+                }}
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                if (credentialResponse.credential) {
+                  await login(credentialResponse.credential);
+                }
+              }}
+              onError={() => {
+                alert('Google Login Failed');
+              }}
+              useOneTap
+            />
+          )}
         </NavBtn>
       </NavbarContainer>
     </Nav>
