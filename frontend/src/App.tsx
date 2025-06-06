@@ -4,11 +4,13 @@ import LandingPage from './pages/LandingPage';
 import Upload from './pages/Upload';
 import Score from './pages/Score';
 import ProtectedRoute from './components/ProtectedRoute';
-import Dashboard from "./pages/Dashboard"; 
+import Dashboard from "./pages/Dashboard";
+import Navbar from './components/Navbar/Navbar';
 
 function App() {
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
