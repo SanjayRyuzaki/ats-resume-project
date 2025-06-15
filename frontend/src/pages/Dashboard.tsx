@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ResumeCard from '@/components/ResumeCard';
+import GreetingHeader from '@/components/GreetingHeader';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ScoreHistoryItem {
   id: number;
@@ -12,6 +15,7 @@ export default function Dashboard() {
   const [history, setHistory] = useState<ScoreHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -41,9 +45,7 @@ export default function Dashboard() {
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
             Dashboard
           </h1>
-          <p className="text-lg text-gray-600 mb-8">
-            Welcome back! Here's your resume scoring history.
-          </p>
+          <GreetingHeader name={user?.name} />
           <div className="bg-white rounded-lg shadow-lg p-8">
             {loading ? (
               <div className="text-center text-gray-500 py-8">Loading...</div>
@@ -59,16 +61,7 @@ export default function Dashboard() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {history.map(item => (
-                  <div key={item.id} className="border rounded-lg p-6 shadow-sm bg-gray-50 flex flex-col justify-between">
-                    <div>
-                      <div className="text-lg font-semibold text-gray-800 mb-2">{item.title}</div>
-                      <div className="text-sm text-gray-500 mb-4">{new Date(item.uploadDate).toLocaleString()}</div>
-                    </div>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-2xl font-bold text-indigo-600">{item.score}%</span>
-                      <a href="/score" className="text-indigo-500 hover:underline text-sm">View</a>
-                    </div>
-                  </div>
+                  <ResumeCard key={item.id} title={item.title} uploadDate={item.uploadDate} score={item.score} />
                 ))}
               </div>
             )}
